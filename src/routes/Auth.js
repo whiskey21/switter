@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { authService } from "../fbase";
+import { authService, firebaseInstance } from "../fbase";
 /***
 function Auth(){
     return <span>Auth</span>
@@ -14,6 +14,7 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   // eslint-disable-next-line
   const [newAccount, setAccount] = useState(true);
+  const [error, setError] = useState("");
   const onChange = (event) => {
     //target goes to <input>form
     const {
@@ -36,9 +37,26 @@ const Auth = () => {
         //log in
       }
     } catch (error) {
-      console.log(error);
-      console.log("fucked");
+      setError(error.message);
+      console.log("check out auth");
     }
+  };
+  const setToggle = () => {
+    setAccount((potato) => !potato);
+  };
+  const onClickSocial = async (event) => {
+    const {
+      target: { name },
+    } = event;
+    let provider;
+    if (name === "google") {
+      provider = new firebaseInstance.auth.GoogleAuthProvider();
+      //get google
+    } else if (name === "github") {
+      provider = new firebaseInstance.auth.GithubAuthProvider();
+      //get github
+    }
+    await authService.signInWithPopup(provider);
   };
   return (
     <div>
@@ -63,10 +81,19 @@ const Auth = () => {
           type="submit"
           value={newAccount ? "Create Account" : "Log in"}
         ></input>
+        {error}
       </form>
+      <span onClick={setToggle}>
+        {newAccount ? "Sign in" : "Create Account"}
+        {console.log(newAccount)}
+      </span>
       <div>
-        <button>Continue with Google</button>
-        <button>Continue with Github</button>
+        <button onClick={onClickSocial} name="google">
+          Continue with Google
+        </button>
+        <button onClick={onClickSocial} name="github">
+          Continue with Github
+        </button>
       </div>
     </div>
   );
