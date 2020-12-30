@@ -1,9 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { dbService } from "../fbase";
 
 const Home = () => {
   const [sweet, setSweet] = useState("");
-  const onSubmit = (event) => {
+  const [sweets, setSweets] = useState([]);
+
+  const getSweets = async () => {
+    const data = await dbService.collection("sweet").get();
+    data.forEach((document) => {
+      const documentObj = {
+        ...document.data(),
+        id: document.id,
+      };
+      setSweets((prev) => [documentObj, ...prev]);
+    });
+  };
+
+  useEffect(() => {
+    getSweets();
+  }, []);
+  const onSubmit = async (event) => {
     event.preventDefault();
+    await dbService.collection("sweet").add({
+      sweet,
+      createdAt: Date.now(),
+    });
+    setSweet("");
   };
   const onChange = (event) => {
     const {
@@ -11,7 +33,6 @@ const Home = () => {
     } = event;
     setSweet(value);
   };
-
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -23,6 +44,11 @@ const Home = () => {
         ></input>
         <input type="submit" value="Sweet"></input>
       </form>
+      <div>
+        {sweets.map((sweet) => {
+          return <div key={sweet.id}>{sweet.sweet}</div>;
+        })}
+      </div>
     </div>
   );
 };
