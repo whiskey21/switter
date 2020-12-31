@@ -1,38 +1,42 @@
 import React, { useEffect, useState } from "react";
+import Sweet from "../components/Sweet";
 import { dbService } from "../fbase";
 
-const Home = () => {
+const Home = ({ userObj }) => {
   const [sweet, setSweet] = useState("");
   const [sweets, setSweets] = useState([]);
 
-  const getSweets = async () => {
-    const data = await dbService.collection("sweet").get();
-    data.forEach((document) => {
-      const documentObj = {
+  const getSweets = () => {
+    dbService.collection("sweet").onSnapshot((snap) => {
+      const dbArray = snap.docs.map((document) => ({
+        id: document.id, //its not same with createdID
         ...document.data(),
-        id: document.id,
-      };
-      setSweets((prev) => [documentObj, ...prev]);
+      }));
+      setSweets(dbArray);
     });
   };
 
   useEffect(() => {
     getSweets();
   }, []);
+
   const onSubmit = async (event) => {
     event.preventDefault();
     await dbService.collection("sweet").add({
-      sweet,
+      text: sweet,
       createdAt: Date.now(),
+      createdId: userObj.uid,
     });
     setSweet("");
   };
+
   const onChange = (event) => {
     const {
       target: { value },
     } = event;
     setSweet(value);
   };
+
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -45,9 +49,13 @@ const Home = () => {
         <input type="submit" value="Sweet"></input>
       </form>
       <div>
-        {sweets.map((sweet) => {
-          return <div key={sweet.id}>{sweet.sweet}</div>;
-        })}
+        {sweets.map((sweet) => (
+          <Sweet
+            sweetObj={sweet}
+            key={sweet.id}
+            check={sweet.createdId === userObj.uid}
+          />
+        ))}
       </div>
     </div>
   );

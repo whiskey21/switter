@@ -3,14 +3,15 @@ import AppRouter from "./Router";
 import { authService } from "../fbase";
 
 function App() {
-  // eslint-disable-next-line
   const [init, setInit] = useState(false);
-  // eslint-disable-next-line
   const [IsLoggedIn, SetIsLoggedIn] = useState(authService.currentUser);
+  const [userObj, setUserObj] = useState(null);
+
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
       if (user) {
         SetIsLoggedIn(true);
+        setUserObj(user);
       } else {
         SetIsLoggedIn(false);
       }
@@ -19,7 +20,11 @@ function App() {
   });
   return (
     <>
-      {init ? <AppRouter IsLoggedIn={IsLoggedIn} /> : "Initializing,,,"}
+      {init ? (
+        <AppRouter IsLoggedIn={IsLoggedIn} userObj={userObj} />
+      ) : (
+        "Initializing,,,"
+      )}
       <footer>&copy; {new Date().getFullYear()} Switter</footer>
     </>
   );
