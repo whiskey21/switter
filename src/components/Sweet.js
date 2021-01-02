@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { dbService } from "../fbase";
+import { dbService, storageService } from "../fbase";
 
 const Sweet = ({ sweetObj, check }) => {
   const [editing, setEditing] = useState(false);
@@ -7,10 +7,11 @@ const Sweet = ({ sweetObj, check }) => {
 
   const toggleEditing = () => setEditing((prev) => !prev); //returns oposite previous value
 
-  const onDeleteClick = () => {
+  const onDeleteClick = async () => {
     const ok = window.confirm("Are you sure want to Delete it?");
     if (ok) {
-      return dbService.doc(`sweet/${sweetObj.id}`).delete();
+      await dbService.doc(`sweet/${sweetObj.id}`).delete();
+      await storageService.refFromURL(sweetObj.attachmenturl).delete();
     }
   };
 
@@ -46,6 +47,14 @@ const Sweet = ({ sweetObj, check }) => {
       ) : (
         <>
           <h3>{sweetObj.text}</h3>
+          {sweetObj.attachmenturl && (
+            <img
+              alt="123"
+              src={sweetObj.attachmenturl}
+              width="50px"
+              height="50px"
+            />
+          )}
           {check && (
             <>
               <button onClick={onDeleteClick}>Delete sweet</button>
