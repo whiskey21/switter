@@ -5,7 +5,7 @@ import Home from "../routes/Home";
 import Profile from "../routes/Profile";
 import Navigation from "./Navigation";
 
-const AppRouter = ({ IsLoggedIn, userObj }) => {
+const AppRouter = ({ refreshUser, IsLoggedIn, userObj }) => {
   return (
     <Router>
       {IsLoggedIn && <Navigation />}
@@ -16,7 +16,7 @@ const AppRouter = ({ IsLoggedIn, userObj }) => {
               <Home userObj={userObj} />
             </Route>
             <Route exact path="/profile">
-              <Profile />
+              <Profile userObj={userObj} refreshUser={refreshUser} />
             </Route>
           </>
         ) : (
@@ -30,3 +30,4 @@ const AppRouter = ({ IsLoggedIn, userObj }) => {
 };
 
 export default AppRouter;
+//same path but decides which Links to go

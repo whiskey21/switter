@@ -60,6 +60,7 @@ const Auth = () => {
   };
   return (
     <div>
+      <h2>Switter</h2>
       <form onSubmit={onSubmit}>
         <input
           type="text"
