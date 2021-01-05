@@ -1,4 +1,7 @@
 # clone coding of twitter!
 
-deployed on firebase
-will done soon!
+use firebase for backend
+
+deployed on gh pages
+
+https://lezend22.github.io/switter/#/
