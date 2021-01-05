@@ -13,7 +13,7 @@ const Profile = ({ refreshUser, userObj }) => {
     history.push("/"); //if user sign out finds '/' from history stack
   };
 
-  const getMySweets = () => {
+  /* const getMySweets = () => {
     dbService.collection("sweet").onSnapshot((snap) => {
       const dbArray = snap.docs.map((document) => ({
         id: document.id, //its not same with createdID
@@ -28,8 +28,6 @@ const Profile = ({ refreshUser, userObj }) => {
     const dbArray = data.docs.map((doc) => doc.data());
     setSweets(dbArray);
     console.log(sweets); */
-    });
-  };
 
   const onChangeName = (event) => {
     const {
@@ -54,26 +52,36 @@ const Profile = ({ refreshUser, userObj }) => {
   };
 
   useEffect(() => {
-    getMySweets();
+    //getMySweets();
     console.log("profileEffect");
   }, []);
 
   return (
-    <div>
-      <button onClick={onClickProfile}>Edit Profile</button>
-      {EditProfile && (
-        <form onSubmit={onDisplaySubmit}>
-          <input
-            type="text"
-            placeholder="Change Display Name"
-            value={newDisplayName}
-            onChange={onChangeName}
-          ></input>
-          <input type="submit" value="Update Name" />
-        </form>
-      )}
-      <button onClick={onLogoutClick}>Sign out</button>
-      <div>
+    <div className="container">
+      {/* <button onClick={onClickProfile}>Edit Profile</button>
+      {EditProfile && ( */}
+      <form onSubmit={onDisplaySubmit} className="profileForm">
+        <input
+          type="text"
+          placeholder="Change Display Name"
+          value={newDisplayName}
+          autoFocus
+          onChange={onChangeName}
+          className="formInput"
+        ></input>
+        <input
+          type="submit"
+          value="Update Name"
+          className="formBtn"
+          style={{
+            marginTop: 10,
+          }}
+        />
+      </form>
+      <span className="formBtn cancelBtn logOut" onClick={onLogoutClick}>
+        Log Out
+      </span>
+      {/* <div>
         {sweets.map((sweet) => (
           <Sweet
             sweetObj={sweet}
@@ -81,7 +89,7 @@ const Profile = ({ refreshUser, userObj }) => {
             check={sweet.createdId === userObj.uid}
           />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };

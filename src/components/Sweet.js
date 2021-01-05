@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { dbService, storageService } from "../fbase";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 
 const Sweet = ({ sweetObj, check }) => {
   const [editing, setEditing] = useState(false);
@@ -28,37 +30,38 @@ const Sweet = ({ sweetObj, check }) => {
     setEditing(false);
   };
   return (
-    <div>
+    <div className="nweet">
       {editing ? (
         <>
-          <form onSubmit={onSubmit}>
+          <form onSubmit={onSubmit} className="container nweetEdit">
             <input
               type="text"
               placeholder="Edit your sweet!"
               value={newSweet}
               required
+              autoFocus
               onChange={onEditChange}
+              className="formInput"
             />
-            <input type="submit" value="Update" />
+            <input type="submit" value="Update" className="formBtn" />
           </form>
-          <button onClick={toggleEditing}>Cancle</button>
+          <span onClick={toggleEditing} className="formBtn cancelBtn">
+            Cancel
+          </span>
         </>
       ) : (
         <>
-          <h3>{sweetObj.text}</h3>
-          {sweetObj.attachmenturl && (
-            <img
-              alt="123"
-              src={sweetObj.attachmenturl}
-              width="50px"
-              height="50px"
-            />
-          )}
+          <h4>{sweetObj.text}</h4>
+          {sweetObj.attachmenturl && <img src={sweetObj.attachmenturl} />}
           {check && (
-            <>
-              <button onClick={onDeleteClick}>Delete sweet</button>
-              <button onClick={toggleEditing}>Edit sweet</button>
-            </>
+            <div className="nweet__actions">
+              <span onClick={onDeleteClick}>
+                <FontAwesomeIcon icon={faTrash} />
+              </span>
+              <span onClick={toggleEditing}>
+                <FontAwesomeIcon icon={faPencilAlt} />
+              </span>
+            </div>
           )}
         </>
       )}
