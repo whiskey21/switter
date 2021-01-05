@@ -15,11 +15,13 @@ const Home = ({ userObj }) => {
         ...document.data(),
       }));
       setSweets(dbArray);
+      console.log("getsweet");
     });
   };
 
   useEffect(() => {
     getSweets();
+    console.log("homeeffect");
   }, []);
 
   const onSubmit = async (event) => {
@@ -38,7 +40,7 @@ const Home = ({ userObj }) => {
     };
     await dbService.collection("sweet").add(insertObj);
     setSweet("");
-    setAttachment("");
+    setAttachment(null);
   };
 
   const onChange = (event) => {

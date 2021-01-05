@@ -24,7 +24,6 @@ const Sweet = ({ sweetObj, check }) => {
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    console.log(sweetObj, newSweet);
     await dbService.doc(`sweet/${sweetObj.id}`).update({ text: newSweet });
     setEditing(false);
   };

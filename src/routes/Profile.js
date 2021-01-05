@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import Sweet from "../components/Sweet";
 import { authService, dbService } from "../fbase";
 
 const Profile = ({ refreshUser, userObj }) => {
+  const [sweets, setSweets] = useState([]);
   const [EditProfile, setEditProfile] = useState(false);
   const [newDisplayName, setDisplayName] = useState(userObj.displayName);
   const history = useHistory();
@@ -11,12 +13,22 @@ const Profile = ({ refreshUser, userObj }) => {
     history.push("/"); //if user sign out finds '/' from history stack
   };
 
-  const getMySweets = async () => {
-    const sweets = await dbService
+  const getMySweets = () => {
+    dbService.collection("sweet").onSnapshot((snap) => {
+      const dbArray = snap.docs.map((document) => ({
+        id: document.id, //its not same with createdID
+        ...document.data(),
+      }));
+      setSweets(dbArray);
+      /* const data = await dbService
       .collection("sweet")
       .where("createdId", "==", userObj.uid)
       .get(); //should put string in first prop
-    console.log(sweets.docs.map((doc) => doc.data()));
+    console.log(data.docs.map((doc) => doc.data()));
+    const dbArray = data.docs.map((doc) => doc.data());
+    setSweets(dbArray);
+    console.log(sweets); */
+    });
   };
 
   const onChangeName = (event) => {
@@ -43,7 +55,9 @@ const Profile = ({ refreshUser, userObj }) => {
 
   useEffect(() => {
     getMySweets();
+    console.log("profileEffect");
   }, []);
+
   return (
     <div>
       <button onClick={onClickProfile}>Edit Profile</button>
@@ -59,6 +73,15 @@ const Profile = ({ refreshUser, userObj }) => {
         </form>
       )}
       <button onClick={onLogoutClick}>Sign out</button>
+      <div>
+        {sweets.map((sweet) => (
+          <Sweet
+            sweetObj={sweet}
+            key={sweet.id}
+            check={sweet.createdId === userObj.uid}
+          />
+        ))}
+      </div>
     </div>
   );
 };
